@@ -61,7 +61,7 @@ function LanguageToggle() {
 
 
 export default function Page(){
-  const { t, getServices, getProjects, getExperience } = useLanguage();
+  const { t, getServices, getProjects, getExperience, getCvUrl } = useLanguage();
   const sections = ["inicio","sobre","servicos","projetos","experiencia","contato"];
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -129,7 +129,7 @@ export default function Page(){
           <div className="flex gap-2 items-center">
             <LanguageToggle/>
             <ThemeToggle/>
-            <Button><a href={PROFILE.cvUrl} download className="flex items-center gap-2"><FileDown className="h-4 w-4"/> {t("hero.downloadCV")}</a></Button>
+            <Button><a href={getCvUrl()} download className="flex items-center gap-2"><FileDown className="h-4 w-4"/> {t("hero.downloadCV")}</a></Button>
           </div>
         </div>
       </header>
@@ -158,10 +158,19 @@ export default function Page(){
         <div className="container">
           <motion.h2 {...fadeUp} className="text-3xl font-bold mb-6">{t("about.title")}</motion.h2>
           <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">{t("about.description")}</p>
+          
           <h3 className="text-xl font-semibold mb-3">{t("about.skills")}</h3>
-          <div className="flex flex-wrap gap-2">
-            {SKILLS.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+          <div className="text-gray-600 dark:text-gray-300 mb-6 space-y-1">
+            {(t("about.skillsDesc") as string[]).map((skill, i) => <p key={i}>{skill}</p>)}
           </div>
+          
+          <h3 className="text-xl font-semibold mb-3">{t("about.workStyle")}</h3>
+          <div className="text-gray-600 dark:text-gray-300 mb-6 space-y-1">
+            {(t("about.workStyleDesc") as string[]).map((style, i) => <p key={i}>• {style}</p>)}
+          </div>
+          
+          <h3 className="text-xl font-semibold mb-3">{t("about.languages")}</h3>
+          <p className="text-gray-600 dark:text-gray-300">{t("about.languagesList")}</p>
         </div>
       </Section>
 
