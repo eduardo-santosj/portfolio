@@ -94,11 +94,12 @@ const translations = {
       description: "Desenvolvedor Front-End com mais de 7 anos de experiência na criação de aplicações web escaláveis, atuando principalmente com React, Next.js, TypeScript e integração com APIs em Node.js. Experiência sólida em produtos digitais nos setores de tecnologia, e-commerce e apostas esportivas, trabalhando com times distribuídos e ambientes em nuvem. Formado em Sistemas de Informação e Técnico em Informática.",
       skills: "Stack Técnica",
       skillsDesc: [
-        "Frontend: React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, SASS",
+        "Frontend: React, Next.js, TypeScript, JavaScript ES6+, HTML5/CSS3, Tailwind CSS, SASS",
         "Backend: Node.js, Express, REST APIs",
         "Databases: MongoDB, MySQL, PostgreSQL",
-        "Tools: Git, Docker, AWS, Azure, Vercel, Cypress, Jest",
-        "CMS: WordPress, VTEX"
+        "DevOps & Tools: Git, Docker, AWS, Azure, Vercel, CI/CD",
+        "Testing: Cypress, Jest, React Testing Library",
+        "CMS & E-commerce: WordPress, VTEX"
       ],
       languages: "Idiomas",
       languagesList: "Português (Nativo) • Inglês (B2 - Intermediário-Avançado)",
@@ -112,11 +113,11 @@ const translations = {
       ],
     },
     services: {
-      title: "Competências Principais",
+      title: "Como Posso Ajudar",
       items: [
-        { title: "Desenvolvimento Full Stack", desc: "Desenvolvimento de aplicações web completas com React, Next.js, Node.js e TypeScript. Experiência em arquitetura de software, APIs RESTful e bancos de dados SQL/NoSQL." },
-        { title: "Performance & Otimização", desc: "Especialista em otimização de performance web, SEO técnico e acessibilidade (WCAG). Melhoria de Core Web Vitals e experiência do usuário." },
-        { title: "Liderança Técnica", desc: "Experiência em mentoria de desenvolvedores júnior, code review, definição de arquitetura e boas práticas. Comunicação efetiva com stakeholders e gestão de projetos ágeis." },
+        { title: "Desenvolvimento Full Stack", desc: "Transformo ideias em aplicações web escaláveis e performáticas. Reduzo tempo de desenvolvimento com componentes reutilizáveis e arquitetura bem definida, garantindo código limpo e manutenível." },
+        { title: "Performance & Otimização", desc: "Acelero aplicações web e melhoro experiência do usuário. Já alcancei 40% de melhoria em Core Web Vitals, aumentando conversão e satisfação dos usuários através de otimizações técnicas e SEO." },
+        { title: "Liderança Técnica", desc: "Elevo a qualidade do código do time através de mentoria, code review e definição de padrões. Facilito comunicação entre áreas técnicas e negócio, garantindo entregas ágeis e alinhadas aos objetivos." },
       ],
     },
     projects: {
@@ -209,11 +210,12 @@ const translations = {
       description: "Front-End Engineer with 7+ years of experience building scalable web applications, primarily using React, Next.js, TypeScript, and Node.js API integrations. Strong background in digital products across technology, e-commerce, and sports betting industries, working with distributed teams in remote-first environments. Bachelor’s degree in Information Systems.",
       skills: "Tech Stack",
       skillsDesc: [
-        "Frontend: React, Next.js, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, SASS",
+        "Frontend: React, Next.js, TypeScript, JavaScript ES6+, HTML5/CSS3, Tailwind CSS, SASS",
         "Backend: Node.js, Express, REST APIs",
         "Databases: MongoDB, MySQL, PostgreSQL",
-        "Tools: Git, Docker, AWS, Azure, Vercel, Cypress, Jest",
-        "CMS: WordPress, VTEX"
+        "DevOps & Tools: Git, Docker, AWS, Azure, Vercel, CI/CD",
+        "Testing: Cypress, Jest, React Testing Library",
+        "CMS & E-commerce: WordPress, VTEX"
       ],
       languages: "Languages",
       languagesList: "Portuguese (Native) • English (B2 - Upper-Intermediate)",
@@ -227,11 +229,11 @@ const translations = {
       ],
     },
     services: {
-      title: "Core Competencies",
+      title: "How I Can Help",
       items: [
-        { title: "Full Stack Development", desc: "Complete web application development with React, Next.js, Node.js and TypeScript. Experience in software architecture, RESTful APIs and SQL/NoSQL databases." },
-        { title: "Performance & Optimization", desc: "Expert in web performance optimization, technical SEO and accessibility (WCAG). Core Web Vitals improvement and user experience enhancement." },
-        { title: "Technical Leadership", desc: "Experience mentoring junior developers, code review, architecture definition and best practices. Effective communication with stakeholders and agile project management." },
+        { title: "Full Stack Development", desc: "Transform ideas into scalable and performant web applications. Reduce development time with reusable components and well-defined architecture, ensuring clean and maintainable code." },
+        { title: "Performance & Optimization", desc: "Speed up web applications and improve user experience. Achieved 40% improvement in Core Web Vitals, increasing conversion and user satisfaction through technical optimizations and SEO." },
+        { title: "Technical Leadership", desc: "Elevate team code quality through mentoring, code review and standards definition. Facilitate communication between technical and business areas, ensuring agile deliveries aligned with objectives." },
       ],
     },
     projects: {

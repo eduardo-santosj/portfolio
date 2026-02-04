@@ -42,18 +42,29 @@ function Section({ id, className = "", children }: Readonly<{ id: string; classN
 
 function ThemeToggle() {
   const [dark, setDark] = useState(true);
+  const { t } = useLanguage();
   useEffect(() => { document.documentElement.classList.toggle("dark", dark); }, [dark]);
   return (
-    <Button variant="outline" size="icon" onClick={() => setDark(!dark)}>
+    <Button 
+      variant="outline" 
+      size="icon" 
+      onClick={() => setDark(!dark)}
+      aria-label={dark ? "Ativar tema claro" : "Ativar tema escuro"}
+    >
       {dark ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
     </Button>
   );
 }
 
 function LanguageToggle() {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   return (
-    <Button variant="outline" size="icon" onClick={() => setLanguage(language === "pt" ? "en" : "pt")}>
+    <Button 
+      variant="outline" 
+      size="icon" 
+      onClick={() => setLanguage(language === "pt" ? "en" : "pt")}
+      aria-label={language === "pt" ? "Switch to English" : "Mudar para Português"}
+    >
       <Languages className="h-5 w-5"/>
     </Button>
   );
@@ -114,16 +125,24 @@ export default function Page(){
   
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-muted/30 dark:from-zinc-950 dark:to-zinc-900">
-      <motion.div style={{ scaleX }} className="fixed left-0 right-0 top-0 z-50 h-1 origin-left bg-primary" />
+      {/* Skip to content para acessibilidade */}
+      <a href="#inicio" className="sr-only focus:not-sr-only">
+        Pular para o conteúdo principal
+      </a>
+      
+      <motion.div style={{ scaleX }} className="fixed left-0 right-0 top-0 z-50 h-1 origin-left bg-primary" aria-hidden="true" />
 
       {/* HEADER */}
       <header className="sticky top-0 z-40 backdrop-blur border-b supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-950/60">
         <div className="container flex items-center justify-between py-3 px-4 w-full mx-auto my-0">
           <div className="flex items-center gap-2">
-            <Avatar className="h-9 w-9"><AvatarImage src={PROFILE.avatar}/><AvatarFallback>{PROFILE.nome[0]}</AvatarFallback></Avatar>
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={PROFILE.avatar} alt="Foto de perfil de Eduardo dos Santos Jacinto"/>
+              <AvatarFallback>{PROFILE.nome[0]}</AvatarFallback>
+            </Avatar>
             <span className="font-semibold">{PROFILE.nome}</span>
           </div>
-          <nav className="hidden md:flex gap-2">
+          <nav className="hidden md:flex gap-2" aria-label="Navegação principal">
             {sections.map(id => <a key={id} href={`#${id}`} className="px-3 py-2 rounded-full text-sm hover:bg-black/5 dark:hover:bg-white/10 capitalize">{t(`nav.${id}`)}</a>)}
           </nav>
           <div className="flex gap-2 items-center">
@@ -157,20 +176,20 @@ export default function Page(){
       <Section id="sobre">
         <div className="container">
           <motion.h2 {...fadeUp} className="text-3xl font-bold mb-6">{t("about.title")}</motion.h2>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">{t("about.description")}</p>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">{t("about.description")}</p>
           
           <h3 className="text-xl font-semibold mb-3">{t("about.skills")}</h3>
-          <div className="text-gray-600 dark:text-gray-300 mb-6 space-y-1">
+          <div className="text-gray-700 dark:text-gray-300 mb-6 space-y-1">
             {(t("about.skillsDesc") as string[]).map((skill, i) => <p key={i}>{skill}</p>)}
           </div>
           
           <h3 className="text-xl font-semibold mb-3">{t("about.workStyle")}</h3>
-          <div className="text-gray-600 dark:text-gray-300 mb-6 space-y-1">
+          <div className="text-gray-700 dark:text-gray-300 mb-6 space-y-1">
             {(t("about.workStyleDesc") as string[]).map((style, i) => <p key={i}>• {style}</p>)}
           </div>
           
           <h3 className="text-xl font-semibold mb-3">{t("about.languages")}</h3>
-          <p className="text-gray-600 dark:text-gray-300">{t("about.languagesList")}</p>
+          <p className="text-gray-700 dark:text-gray-300">{t("about.languagesList")}</p>
         </div>
       </Section>
 
@@ -205,7 +224,14 @@ export default function Page(){
             {projetosFiltrados.map((p, i) => (
               <motion.div key={i} {...fadeUp}>
                 <div className="rounded-3xl overflow-hidden border border-black/10 dark:border-white/10 bg-white dark:bg-zinc-900 h-full pb-3">
-                  <Image src={p.capa} alt={p.title} width={400} height={192} className="h-48 w-full object-cover"/>
+                  <Image 
+                    src={p.capa} 
+                    alt={`Screenshot do projeto ${p.title}`} 
+                    width={400} 
+                    height={192} 
+                    className="h-48 w-full object-cover"
+                    loading="lazy"
+                  />
                   <div className="p-6">
                     <CardTitle className="text-xl">{p.title}</CardTitle>
                   </div>
@@ -327,6 +353,35 @@ export default function Page(){
           <span className="text-sm opacity-70">{PROFILE.local}</span>
         </div>
       </footer>
+      
+      {/* Structured Data para SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Eduardo dos Santos Jacinto",
+            "jobTitle": "Full Stack Developer",
+            "url": "https://edusantos.vercel.app",
+            "sameAs": [
+              "https://github.com/eduardo-santosj",
+              "https://www.linkedin.com/in/eduardo-dos-santos-jacinto-aa330010a/"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressRegion": "Santa Catarina",
+              "addressCountry": "BR"
+            },
+            "email": "eduardosantosj2@gmail.com",
+            "knowsAbout": ["React", "Next.js", "TypeScript", "Node.js", "Full Stack Development"],
+            "alumniOf": {
+              "@type": "EducationalOrganization",
+              "name": "Sistemas de Informação"
+            }
+          })
+        }}
+      />
     </main>
   );
 }
