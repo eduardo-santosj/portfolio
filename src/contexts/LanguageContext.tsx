@@ -45,6 +45,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       { ...items[0], capa: "/images/projetos/suprema.png", link: "https://suprema.bet.br", repo: "", stack: ["React", "Next.js","AWS"], tags: ["gaming","react"] },
       { ...items[1], capa: "/images/projetos/cobasi.png", link: "https://www.cobasi.com.br", repo: "", stack: ["React","Node.js","Vtex"], tags: ["ecommerce","pet"]},
       { ...items[2], capa: "/images/projetos/chevrolet.png", link: "https://chevroletdigital.com.br", repo: "", stack: ["React","Java"], tags: ["automotivo","enterprise"] },
+      { ...items[3], capa: "/images/projetos/suaarena.png", link: "https://suaarena.com.br", repo: "", stack: ["React","Next.js","Node.js","Tailwind","MySQL","AWS"], tags: ["esportes","react","saas"] },
+      { ...items[4], capa: "/images/projetos/ameconsulta.png", link: "https://exames.ameconsulta.com.br", repo: "", stack: ["React","Next.js","Node.js","Tailwind","PostgreSQL","AWS"], tags: ["saude","react","saas"] },
     ];
   };
 
@@ -85,13 +87,13 @@ const translations = {
     },
     hero: {
       greeting: "Olá, eu sou",
-      description: "Desenvolvedor Full Stack com 7+ anos de experiência. Especialista em React, Next.js e Node.js. Foco em entrega de resultados, trabalho em equipe e resolução de problemas complexos.",
+      description: "Desenvolvedor Full Stack com 7+ anos de experiência, focado em arquitetura de software e liderança técnica. Projeto e entrego sistemas escaláveis para diferentes setores, guiando times e definindo padrões de qualidade end-to-end.",
       downloadCV: "Baixar CV",
       contact: "Entre em Contato",
     },
     about: {
       title: "Sobre Mim",
-      description: "Desenvolvedor Front-End com mais de 7 anos de experiência na criação de aplicações web escaláveis, atuando principalmente com React, Next.js, TypeScript e integração com APIs em Node.js. Experiência sólida em produtos digitais nos setores de tecnologia, e-commerce e apostas esportivas, trabalhando com times distribuídos e ambientes em nuvem. Formado em Sistemas de Informação e Técnico em Informática.",
+      description: "Desenvolvedor Full Stack com mais de 7 anos de experiência, atuando no design de arquiteturas front-end e integrações de sistemas com React, Next.js, TypeScript e Node.js. Com histórico de decisões de stack, definição de padrões de código e mentoria de times, entrego produtos digitais escaláveis nos setores de saúde, e-commerce, esportes e apostas. Formado em Sistemas de Informação e Técnico em Informática.",
       skills: "Stack Técnica",
       skillsDesc: [
         "Frontend: React, Next.js, TypeScript, JavaScript ES6+, HTML5/CSS3, Tailwind CSS, SASS",
@@ -129,6 +131,8 @@ const translations = {
         { title: "Suprema Gaming & Co.", desc: "Plataforma de apostas esportivas desenvolvida com React e integração BetConstruct, incluindo CMS para gestão de afiliados, análise de performance e distribuição de conteúdo. Infraestrutura escalável na AWS." },
         { title: "Cobasi & SPet (Accurate Software)", desc: "Desenvolvimento do e-commerce Cobasi com React, VTEX e SASS, incluindo sistema SPet para agendamentos de serviços pet. Implementação de componentes reutilizáveis e otimização que melhorou Core Web Vitals em 40%." },
         { title: "GM Propostas Comerciais (Accurate Software)", desc: "Desenvolvimento do sistema GM Propostas para financiamento e compra de veículos com consultas de CPF/CNPJ e endereço. Integração com APIs de seguradoras e DocuSign para assinatura digital de contratos." },
+        { title: "Sua Arena", desc: "Sistema completo de controle e gestão de campeonatos de FTV e Beach Tennis. Permite cadastro de atletas, chaves, resultados e rankings. Desenvolvido com Next.js, Node.js, Tailwind, Shadcn e banco MySQL hospedado na AWS." },
+        { title: "AME Consulta – Gestão de Exames", desc: "Sistema de gerenciamento de exames para clínica médica com acesso diferenciado para pacientes e funcionários. Integração com máquinas de ultrassom via protocolo DICOM. Desenvolvido com Next.js, Node.js, Tailwind, Shadcn e PostgreSQL na AWS." },
       ],
     },
     experience: {
@@ -174,6 +178,12 @@ const translations = {
         },
       ],
     },
+    a11y: {
+      skipToContent: "Pular para o conteúdo principal",
+      lightTheme: "Ativar tema claro",
+      darkTheme: "Ativar tema escuro",
+      searchProjects: "Buscar projetos por nome, tecnologia ou categoria",
+    },
     contact: {
       title: "Vamos Conversar?",
       subtitle: "Estou disponível para novos projetos e oportunidades. Entre em contato!",
@@ -201,13 +211,13 @@ const translations = {
     },
     hero: {
       greeting: "Hi, I'm",
-      description: "Full Stack Developer with 7+ years of experience. Expert in React, Next.js and Node.js. Focus on results delivery, teamwork and complex problem solving.",
+      description: "Full Stack Developer with 7+ years of experience focused on software architecture and technical leadership. I design and deliver scalable systems across industries, guiding teams and defining end-to-end quality standards.",
       downloadCV: "Download CV",
       contact: "Get in Touch",
     },
     about: {
       title: "About Me",
-      description: "Front-End Engineer with 7+ years of experience building scalable web applications, primarily using React, Next.js, TypeScript, and Node.js API integrations. Strong background in digital products across technology, e-commerce, and sports betting industries, working with distributed teams in remote-first environments. Bachelor’s degree in Information Systems.",
+      description: "Full Stack Developer with 7+ years of experience in front-end architecture design and system integrations using React, Next.js, TypeScript, and Node.js. With a track record of stack decisions, code standard definition, and team mentorship, I deliver scalable digital products across healthcare, e-commerce, sports, and betting industries. Bachelor’s degree in Information Systems.",
       skills: "Tech Stack",
       skillsDesc: [
         "Frontend: React, Next.js, TypeScript, JavaScript ES6+, HTML5/CSS3, Tailwind CSS, SASS",
@@ -245,6 +255,8 @@ const translations = {
         { title: "Suprema Gaming & Co.", desc: "Sports betting platform developed with React and BetConstruct integration, including CMS for affiliate management, performance analysis and content distribution. Scalable infrastructure on AWS." },
         { title: "Cobasi & SPet (Accurate Software)", desc: "Development of Cobasi e-commerce with React, VTEX and SASS, including SPet system for pet service scheduling. Implementation of reusable components and optimization that improved Core Web Vitals by 40%." },
         { title: "GM Commercial Proposals (Accurate Software)", desc: "Development of GM Proposals system for vehicle financing and purchase with CPF/CNPJ and address queries. Integration with insurance APIs and DocuSign for digital contract signing." },
+        { title: "Sua Arena", desc: "Complete tournament management system for FTV and Beach Tennis championships. Handles athlete registration, brackets, results and rankings. Built with Next.js, Node.js, Tailwind, Shadcn and MySQL on AWS." },
+        { title: "AME Consulta – Exam Management", desc: "Medical exam management system with role-based access for patients and staff. Integrates with ultrasound machines via DICOM protocol. Built with Next.js, Node.js, Tailwind, Shadcn and PostgreSQL on AWS." },
       ],
     },
     experience: {
@@ -289,6 +301,12 @@ const translations = {
           ],
         },
       ],
+    },
+    a11y: {
+      skipToContent: "Skip to main content",
+      lightTheme: "Switch to light theme",
+      darkTheme: "Switch to dark theme",
+      searchProjects: "Search projects by name, technology or category",
     },
     contact: {
       title: "Let's Talk?",

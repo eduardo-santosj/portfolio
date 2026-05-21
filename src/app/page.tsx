@@ -5,13 +5,29 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { ExternalLink, FileDown, Github, Languages, Linkedin, Mail, Moon, Sun } from "lucide-react";
+import { ExternalLink, FileDown, Languages, Mail, Moon, Sun } from "lucide-react";
+
+function GithubIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    </svg>
+  );
+}
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -49,7 +65,7 @@ function ThemeToggle() {
       variant="outline" 
       size="icon" 
       onClick={() => setDark(!dark)}
-      aria-label={dark ? "Ativar tema claro" : "Ativar tema escuro"}
+      aria-label={dark ? t("a11y.lightTheme") as string : t("a11y.darkTheme") as string}
     >
       {dark ? <Sun className="h-5 w-5"/> : <Moon className="h-5 w-5"/>}
     </Button>
@@ -127,7 +143,7 @@ export default function Page(){
     <main className="min-h-screen bg-gradient-to-b from-white to-muted/30 dark:from-zinc-950 dark:to-zinc-900">
       {/* Skip to content para acessibilidade */}
       <a href="#inicio" className="sr-only focus:not-sr-only">
-        Pular para o conteúdo principal
+        {t("a11y.skipToContent")}
       </a>
       
       <motion.div style={{ scaleX }} className="fixed left-0 right-0 top-0 z-50 h-1 origin-left bg-primary" aria-hidden="true" />
@@ -148,7 +164,7 @@ export default function Page(){
           <div className="flex gap-2 items-center">
             <LanguageToggle/>
             <ThemeToggle/>
-            <Button><a href={getCvUrl()} download className="flex items-center gap-2"><FileDown className="h-4 w-4"/> {t("hero.downloadCV")}</a></Button>
+            <Button asChild><a href={getCvUrl()} download className="flex items-center gap-2"><FileDown className="h-4 w-4"/> {t("hero.downloadCV")}</a></Button>
           </div>
         </div>
       </header>
@@ -164,9 +180,9 @@ export default function Page(){
             <h1 className="text-4xl md:text-6xl font-bold mb-4">{PROFILE.nome}</h1>
             <p className="text-gray-600 dark:text-gray-300 mb-6">{t("hero.description")}</p>
             <div className="flex gap-3 flex-wrap">
-              <Button className="text-base"><a href="#contato" className="flex items-center gap-2"><Mail className="h-5 w-5"/> {t("hero.contact")}</a></Button>
-              <Button variant="outline"><a href={PROFILE.github} target="_blank" className="flex items-center gap-2"><Github className="h-5 w-5"/> GitHub</a></Button>
-              <Button variant="outline"><a href={PROFILE.linkedin} target="_blank" className="flex items-center gap-2"><Linkedin className="h-5 w-5"/> LinkedIn</a></Button>
+              <Button asChild className="text-base"><a href="#contato" className="flex items-center gap-2"><Mail className="h-5 w-5"/> {t("hero.contact")}</a></Button>
+              <Button asChild variant="outline"><a href={PROFILE.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2"><GithubIcon className="h-5 w-5"/> GitHub</a></Button>
+              <Button asChild variant="outline"><a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2"><LinkedinIcon className="h-5 w-5"/> LinkedIn</a></Button>
             </div>
           </motion.div>
         </div>
@@ -218,7 +234,12 @@ export default function Page(){
         <div className="container">
           <motion.h2 {...fadeUp} className="text-3xl font-bold mb-6">{t("projects.title")}</motion.h2>
           <div className="mb-6">
-            <Input placeholder={t("projects.search") as string} value={busca} onChange={(e)=>setBusca(e.target.value)} />
+            <Input
+              placeholder={t("projects.search") as string}
+              aria-label={t("a11y.searchProjects") as string}
+              value={busca}
+              onChange={(e)=>setBusca(e.target.value)}
+            />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {projetosFiltrados.map((p, i) => (
@@ -239,8 +260,8 @@ export default function Page(){
                   <CardFooter className="flex justify-between items-center">
                     <div className="flex flex-wrap gap-2">{p.stack.map(s=><Badge key={s} variant="outline">{s}</Badge>)}</div>
                     <div className="flex gap-2">
-                      {p.repo && <Button variant="outline" className="text-sm"><a href={p.repo} className="flex items-center gap-2"><Github className="h-4 w-4"/> Repo</a></Button>}
-                      {p.link && <Button className="text-sm"><a href={p.link} target="_blank" className="flex items-center gap-2">Live <ExternalLink className="h-4 w-4"/></a></Button>}
+                      {p.repo && <Button asChild variant="outline" className="text-sm"><a href={p.repo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2"><GithubIcon className="h-4 w-4"/> Repo</a></Button>}
+                      {p.link && <Button asChild className="text-sm"><a href={p.link} target="_blank" rel="noopener noreferrer" aria-label={`${t("projects.viewProject") as string}: ${p.title}`} className="flex items-center gap-2">Live <ExternalLink className="h-4 w-4"/></a></Button>}
                     </div>
                   </CardFooter>
                 </div>
@@ -292,6 +313,7 @@ export default function Page(){
                       name="name"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel>{t("contact.form.name") as string}</FormLabel>
                           <FormControl>
                             <Input placeholder={t("contact.form.name") as string} {...field} />
                           </FormControl>
@@ -304,6 +326,7 @@ export default function Page(){
                       name="email"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel>{t("contact.form.email") as string}</FormLabel>
                           <FormControl>
                             <Input type="email" placeholder={t("contact.form.email") as string} {...field} />
                           </FormControl>
@@ -316,6 +339,7 @@ export default function Page(){
                       name="message"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel>{t("contact.form.message") as string}</FormLabel>
                           <FormControl>
                             <Textarea placeholder={t("contact.form.message") as string} {...field} />
                           </FormControl>
@@ -335,8 +359,8 @@ export default function Page(){
                 <CardTitle>{t("contact.title")}</CardTitle>
               </div>
               <CardContent className="grid gap-2 text-sm">
-                <a href={PROFILE.github} className="flex gap-2 items-center"><Github className="h-4 w-4"/>GitHub</a>
-                <a href={PROFILE.linkedin} className="flex gap-2 items-center"><Linkedin className="h-4 w-4"/>LinkedIn</a>
+                <a href={PROFILE.github} target="_blank" rel="noopener noreferrer" className="flex gap-2 items-center"><GithubIcon className="h-4 w-4"/>GitHub</a>
+                <a href={PROFILE.linkedin} target="_blank" rel="noopener noreferrer" className="flex gap-2 items-center"><LinkedinIcon className="h-4 w-4"/>LinkedIn</a>
                 <a href={`mailto:${PROFILE.email}`} className="flex gap-2 items-center"><Mail className="h-4 w-4"/>E-mail</a>
               </CardContent>
             </div>
