@@ -1,194 +1,280 @@
 import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+
+import { LanguageProvider, translations } from '@/contexts/LanguageContext'
 import Page from '../page'
 
-// Mock do LanguageContext
-jest.mock('@/contexts/LanguageContext', () => ({
-  useLanguage: () => ({
-    language: 'pt',
-    setLanguage: jest.fn(),
-    t: (key: string) => {
-      const translations: Record<string, string> = {
-        'nav.inicio': 'Início',
-        'nav.sobre': 'Sobre',
-        'nav.servicos': 'Serviços',
-        'nav.projetos': 'Projetos',
-        'nav.experiencia': 'Experiência',
-        'nav.contato': 'Contato',
-        'hero.greeting': 'Olá, eu sou',
-        'hero.description': 'Desenvolvedor Full Stack com 7+ anos de experiência. Especialista em React, Next.js e Node.js. Foco em entrega de resultados, trabalho em equipe e resolução de problemas complexos.',
-        'hero.downloadCV': 'Baixar CV',
-        'hero.contact': 'Entre em Contato',
-        'about.title': 'Sobre Mim',
-        'services.title': 'Como Posso Ajudar',
-        'projects.title': 'Projetos em Destaque',
-        'projects.search': 'Buscar projetos...',
-        'experience.title': 'Experiência Profissional',
-        'contact.title': 'Vamos Conversar?',
-        'contact.form.name': 'Nome',
-        'contact.form.email': 'Email',
-        'contact.form.message': 'Mensagem',
-        'contact.form.send': 'Enviar Mensagem',
-        'contact.form.nameError': 'Nome deve ter pelo menos 2 caracteres.',
-        'contact.form.emailError': 'Email inválido.',
-        'contact.form.messageError': 'Mensagem deve ter pelo menos 10 caracteres.',
-      };
-      return translations[key] || key;
-    },
-    getServices: () => [
-      { icon: '🧩', title: 'Desenvolvimento Full Stack', desc: 'Transformo ideias em aplicações web escaláveis e performáticas.', tags: ['React', 'Next.js', 'Node.js', 'Tailwind'] },
-      { icon: '⚡', title: 'Performance & Otimização', desc: 'Acelero aplicações web e melhoro experiência do usuário.', tags: ['CWV', 'A11y', 'SEO', 'SSR'] },
-      { icon: '🧠', title: 'Liderança Técnica', desc: 'Elevo a qualidade do código do time através de mentoria.', tags: ['Consultoria', 'Arquitetura', 'Freelance'] },
-    ],
-    getProjects: () => [
-      { title: 'Suprema Gaming & Co.', desc: 'Plataforma de apostas esportivas', capa: '/images/projetos/suprema.png', link: 'https://suprema.bet.br', repo: '', stack: ['React', 'Next.js', 'AWS'], tags: ['gaming', 'react'] },
-      { title: 'Cobasi & SPet (Accurate Software)', desc: 'E-commerce Cobasi', capa: '/images/projetos/cobasi.png', link: 'https://www.cobasi.com.br', repo: '', stack: ['React', 'Node.js', 'Vtex'], tags: ['ecommerce', 'pet'] },
-      { title: 'GM Propostas Comerciais (Accurate Software)', desc: 'Sistema GM Propostas', capa: '/images/projetos/chevrolet.png', link: 'https://chevroletdigital.com.br', repo: '', stack: ['React', 'Java'], tags: ['automotivo', 'enterprise'] },
-    ],
-    getExperience: () => [
-      { company: 'Suprema Gaming & Co.', role: 'Desenvolvedor Web Full Stack', period: 'Jul/2023 – Atual', local: 'Remoto', points: ['Desenvolvimento de plataformas de apostas'] },
-      { company: 'Arena22', role: 'Desenvolvedor Web Frontend', period: 'Out/2021 – Jul/2023', local: 'São Paulo, SP', points: ['Desenvolvimento de fantasy games'] },
-      { company: 'Accurate Software', role: 'Desenvolvedor Web Full Stack', period: 'Mai/2019 – Out/2021', local: 'São Paulo, SP', points: ['Sistema enterprise GM Propostas'] },
-    ],
-    getCvUrl: () => '/cv.pdf',
-  }),
-  LanguageProvider: ({ children }: { children: React.ReactNode }) => children,
-}));
+function renderPage() {
+  return render(
+    <LanguageProvider>
+      <Page />
+    </LanguageProvider>,
+  )
+}
+
+const VELA_PROJECTS = [
+  'SuaArena Torneios',
+  'SuaArena Arenas',
+  'SuaArena Ferinos',
+  'AmeConsulta',
+  'Gonix (FisioAnalysis)',
+  'Vela Connect',
+  'SuaArena Design System',
+]
+
+const CAREER_PROJECTS = [
+  'Suprema Gaming & Co.',
+  'Cobasi & SPet (Accurate Software)',
+  'GM Propostas Comerciais (Accurate Software)',
+]
 
 describe('Portfolio Page', () => {
-  beforeEach(() => {
-    render(<Page />)
-  })
-
-  describe('Header', () => {
-    it('renders profile name', () => {
-      expect(screen.getByText('Eduardo dos Santos Jacinto')).toBeInTheDocument()
+  describe('Navbar', () => {
+    it('renders the floating navigation with section links', () => {
+      renderPage()
+      const nav = screen.getByRole('navigation', { name: 'Navegação principal' })
+      expect(within(nav).getByRole('link', { name: 'Projetos' })).toHaveAttribute('href', '#projetos')
+      expect(within(nav).getByRole('link', { name: 'Serviços' })).toHaveAttribute('href', '#servicos')
+      expect(within(nav).getByRole('link', { name: 'Experiência' })).toHaveAttribute('href', '#experiencia')
+      expect(within(nav).getByRole('link', { name: 'Contato' })).toHaveAttribute('href', '#contato')
     })
 
-    it('renders navigation links', () => {
-      expect(screen.getByText('Início')).toBeInTheDocument()
-      expect(screen.getByText('Sobre')).toBeInTheDocument()
-      expect(screen.getByText('Serviços')).toBeInTheDocument()
-      expect(screen.getByText('Projetos')).toBeInTheDocument()
-      expect(screen.getByText('Experiência')).toBeInTheDocument()
-      expect(screen.getByText('Contato')).toBeInTheDocument()
+    it('switches the whole page to English', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Switch to English' }))
+      expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Real software, running in production.')
+      expect(screen.getByText('Featured projects')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Mudar para Português' })).toBeInTheDocument()
+      screen.getAllByRole('link', { name: /Download CV/ }).forEach((link) => expect(link).toHaveAttribute('href', '/cv_en.pdf'))
     })
 
-    it('renders CV download button', () => {
-      const cvButton = screen.getByText('Baixar CV')
-      expect(cvButton).toBeInTheDocument()
-      expect(cvButton.closest('a')).toHaveAttribute('download')
-    })
-
-    it('renders theme toggle button', () => {
-      const themeButton = screen.getByLabelText(/tema/i)
-      expect(themeButton).toBeInTheDocument()
-    })
-
-    it('renders language toggle button', () => {
-      const langButton = screen.getByLabelText(/português|english/i)
-      expect(langButton).toBeInTheDocument()
+    it('renders the dark/light theme toggle (dark by default)', () => {
+      renderPage()
+      expect(screen.getByRole('button', { name: 'Ativar tema claro' })).toBeInTheDocument()
     })
   })
 
-  describe('Hero Section', () => {
-    it('renders greeting and name', () => {
-      expect(screen.getByText('Olá, eu sou')).toBeInTheDocument()
-      expect(screen.getByText('Eduardo dos Santos Jacinto')).toBeInTheDocument()
+  describe('Vela Studio', () => {
+    it('presents the software house with its products and commercial contacts', () => {
+      renderPage()
+      const vela = within(document.getElementById('vela') as HTMLElement)
+      expect(vela.getByRole('heading', { level: 2 })).toHaveTextContent('Vela Studio, minha software house.')
+      expect(vela.getByText(/Tiro empresas do papel, da planilha e do sistema improvisado/)).toBeInTheDocument()
+      expect(vela.getByText('2026')).toBeInTheDocument()
+      expect(vela.getByText('Itajaí, SC')).toBeInTheDocument()
+      expect(vela.getAllByAltText('Logo da Vela Studio')).toHaveLength(2)
+
+      VELA_PROJECTS.forEach((title) => {
+        expect(vela.getByRole('link', { name: (name) => name.startsWith(title) })).toHaveAttribute('href', expect.stringMatching(/^#projeto-/))
+      })
+
+      expect(vela.getByRole('link', { name: /^Site: velastudio.com.br/ })).toHaveAttribute('href', 'https://velastudio.com.br')
+      expect(vela.getByRole('link', { name: /@velastudiobr/ })).toHaveAttribute('href', 'https://www.instagram.com/velastudiobr/')
+      expect(vela.getByRole('link', { name: /Conversar com a Vela no WhatsApp/ })).toHaveAttribute('href', 'https://wa.me/5547997356490')
+      expect(vela.getByRole('link', { name: /contato@velastudio.com.br/ })).toHaveAttribute('href', 'mailto:contato@velastudio.com.br')
     })
 
-    it('renders description', () => {
-      expect(screen.getByText(/Desenvolvedor Full Stack com 7\+ anos/)).toBeInTheDocument()
-    })
-
-    it('renders contact buttons', () => {
-      expect(screen.getByText('Entre em Contato')).toBeInTheDocument()
-      expect(screen.getAllByText('GitHub')).toHaveLength(2)
-      expect(screen.getAllByText('LinkedIn')).toHaveLength(2)
+    it('never exposes CNPJ or address', () => {
+      expect(JSON.stringify(translations)).not.toMatch(/CNPJ da Vela|\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}/)
     })
   })
 
-  describe('About Section', () => {
-    it('renders about title', () => {
-      expect(screen.getByText('Sobre Mim')).toBeInTheDocument()
+  describe('Mobile menu', () => {
+    const ALL_SECTIONS = ['Início', 'Projetos', 'Vela Studio', 'Números', 'Serviços', 'Experiência', 'Contato']
+
+    it('opens from the hamburger with every section, language, theme, CV and contact CTA', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const trigger = screen.getByRole('button', { name: 'Abrir menu' })
+      expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+      await user.click(trigger)
+      const dialog = await screen.findByRole('dialog', { name: 'Menu' })
+      expect(trigger).toHaveAttribute('aria-expanded', 'true')
+
+      const menu = within(dialog)
+      const sections = within(menu.getByRole('navigation', { name: 'Seções' }))
+      ALL_SECTIONS.forEach((label) => expect(sections.getByRole('link', { name: new RegExp(label) })).toBeInTheDocument())
+      expect(sections.getByRole('link', { name: /Vela Studio/ })).toHaveAttribute('href', '#vela')
+
+      expect(within(menu.getByRole('group', { name: 'Idioma' })).getByRole('button', { name: 'PT' })).toHaveAttribute('aria-pressed', 'true')
+      expect(within(menu.getByRole('group', { name: 'Tema' })).getByRole('button', { name: 'Escuro' })).toHaveAttribute('aria-pressed', 'true')
+      expect(menu.getByRole('link', { name: /Baixar CV/ })).toHaveAttribute('download')
+      expect(menu.getByRole('link', { name: /Falar comigo/ })).toHaveAttribute('href', '#contato')
+      expect(menu.getByRole('button', { name: 'Fechar menu' })).toBeInTheDocument()
     })
 
-    it('renders skills with technologies', () => {
-      const skills = ['React', 'Next.js', 'TypeScript', 'Node.js']
-      skills.forEach(skill => {
-        expect(screen.getAllByText(new RegExp(skill, 'i')).length).toBeGreaterThan(0)
+    it('closes when a section link is clicked', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Abrir menu' }))
+      const dialog = await screen.findByRole('dialog', { name: 'Menu' })
+      await user.click(within(dialog).getByRole('link', { name: /Experiência/ }))
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    })
+
+    it('closes with Esc and switches language from inside the panel', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await user.click(screen.getByRole('button', { name: 'Abrir menu' }))
+      const dialog = await screen.findByRole('dialog', { name: 'Menu' })
+      await user.click(within(dialog).getByRole('button', { name: 'EN' }))
+      expect(within(dialog).getByRole('button', { name: 'Close menu' })).toBeInTheDocument()
+      await user.keyboard('{Escape}')
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+      expect(screen.getByRole('button', { name: 'Open menu' })).toHaveFocus()
+    })
+  })
+
+  describe('Hero', () => {
+    it('renders the display title and the LinkedIn role', () => {
+      renderPage()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Software de verdade, rodando em produção.')
+      expect(screen.getByText('Desenvolvedor Front-End Sênior')).toBeInTheDocument()
+      const hero = document.getElementById('inicio') as HTMLElement
+      expect(within(hero).getByText(/9 anos de experiência em React, Next.js e TypeScript/)).toBeInTheDocument()
+    })
+
+    it('renders the HUD with location, timezone and availability', () => {
+      renderPage()
+      expect(screen.getByText('Itajaí, SC · Remoto')).toBeInTheDocument()
+      expect(screen.getByText(/GMT-3/)).toBeInTheDocument()
+      expect(screen.getByText('Disponível para projetos')).toBeInTheDocument()
+    })
+
+    it('renders the CTAs, including the CV download', () => {
+      renderPage()
+      expect(screen.getByRole('link', { name: /Ver projetos/ })).toHaveAttribute('href', '#projetos')
+      expect(screen.getByRole('link', { name: 'Falar comigo' })).toHaveAttribute('href', '#contato')
+      const cvLinks = screen.getAllByRole('link', { name: /Baixar CV/ })
+      cvLinks.forEach((link) => {
+        expect(link).toHaveAttribute('download')
+        expect(link).toHaveAttribute('href', '/cv.pdf')
       })
     })
   })
 
-  describe('Services Section', () => {
-    it('renders services title', () => {
-      expect(screen.getByText('Como Posso Ajudar')).toBeInTheDocument()
-    })
-
-    it('renders all services', () => {
-      expect(screen.getByText('Desenvolvimento Full Stack')).toBeInTheDocument()
-      expect(screen.getByText('Performance & Otimização')).toBeInTheDocument()
-      expect(screen.getByText('Liderança Técnica')).toBeInTheDocument()
+  describe('Stack marquee', () => {
+    it('renders the stack logos', () => {
+      renderPage()
+      const stack = screen.getByRole('region', { name: 'Stack em produção' })
+      expect(within(stack).getAllByText('React').length).toBeGreaterThan(0)
+      expect(within(stack).getAllByText('Next.js').length).toBeGreaterThan(0)
     })
   })
 
-  describe('Projects Section', () => {
-    it('renders projects title', () => {
-      expect(screen.getByText('Projetos em Destaque')).toBeInTheDocument()
+  describe('Projects', () => {
+    it('renders every featured project, Vela Studio first', () => {
+      renderPage()
+      const titles = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+      const all = [...VELA_PROJECTS, ...CAREER_PROJECTS]
+      all.forEach((title) => expect(titles).toContain(title))
+      expect(titles.indexOf('SuaArena Torneios')).toBeLessThan(titles.indexOf('Suprema Gaming & Co.'))
     })
 
-    it('renders project filter input', () => {
-      const filterInput = screen.getByPlaceholderText('Buscar projetos...')
-      expect(filterInput).toBeInTheDocument()
+    it('shows the project status in mono labels', () => {
+      renderPage()
+      const projects = within(document.getElementById('projetos') as HTMLElement)
+      expect(projects.getAllByText('Live').length).toBe(6)
+      expect(projects.queryByText('Em dev')).not.toBeInTheDocument()
+      expect(projects.getByText('Publicado')).toBeInTheDocument()
+      expect(projects.getAllByText('Entregue').length).toBe(3)
     })
 
-    it('filters projects by search term', async () => {
+    it('links each project to the same URL featured on LinkedIn', () => {
+      renderPage()
+      expect(screen.getByRole('link', { name: 'Ver projeto: SuaArena Torneios' })).toHaveAttribute('href', 'https://suaarena.com.br')
+      expect(screen.getByRole('link', { name: 'Ver projeto: SuaArena Arenas' })).toHaveAttribute('href', 'https://interno.suaarena.com.br')
+      expect(screen.getByRole('link', { name: 'Ver projeto: AmeConsulta' })).toHaveAttribute('href', 'https://exames.ameconsulta.com.br')
+      expect(screen.getByRole('link', { name: 'Ver projeto: SuaArena Ferinos' })).toHaveAttribute('href', 'https://ferinos.suaarena.com.br/torneios')
+      expect(screen.getByRole('link', { name: 'Ver projeto: Vela Connect' })).toHaveAttribute('href', 'https://velaconnect.com.br')
+    })
+
+    it('renders the Design System as a styled card without screenshot', () => {
+      renderPage()
+      expect(screen.queryByAltText('Screenshot do projeto SuaArena Design System')).not.toBeInTheDocument()
+      expect(screen.getByText('Pacote npm privado, sem página pública')).toBeInTheDocument()
+      expect(screen.getByAltText('Screenshot do projeto Gonix (FisioAnalysis)')).toHaveAttribute('src', '/images/projetos/gonix.png')
+    })
+
+    it('filters by group', async () => {
       const user = userEvent.setup()
-      const filterInput = screen.getByPlaceholderText('Buscar projetos...')
-      
-      await user.type(filterInput, 'Suprema')
-      
-      expect(screen.getByText('Suprema Gaming & Co.')).toBeInTheDocument()
-      expect(screen.queryByText('Cobasi & SPet (Accurate Software)')).not.toBeInTheDocument()
-    })
+      renderPage()
+      const projects = within(document.getElementById('projetos') as HTMLElement)
+      await user.click(screen.getByRole('button', { name: 'Carreira' }))
+      expect(screen.getByRole('button', { name: 'Carreira' })).toHaveAttribute('aria-pressed', 'true')
+      CAREER_PROJECTS.forEach((title) => expect(projects.getByRole('heading', { name: title })).toBeInTheDocument())
+      expect(projects.queryByRole('heading', { name: 'SuaArena Torneios' })).not.toBeInTheDocument()
 
-    it('renders project links', () => {
-      const liveButtons = screen.getAllByText('Live')
-      expect(liveButtons.length).toBeGreaterThan(0)
-    })
-  })
-
-  describe('Experience Section', () => {
-    it('renders experience title', () => {
-      expect(screen.getByText('Experiência Profissional')).toBeInTheDocument()
-    })
-
-    it('renders work experience', () => {
-      expect(screen.getByText(/Desenvolvedor Web Full Stack.*Suprema Gaming/)).toBeInTheDocument()
-      expect(screen.getByText(/Jul\/2023.*Atual/)).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: 'Vela Studio' }))
+      expect(projects.getByRole('heading', { name: 'SuaArena Torneios' })).toBeInTheDocument()
+      expect(projects.queryByRole('heading', { name: 'Suprema Gaming & Co.' })).not.toBeInTheDocument()
     })
   })
 
-  describe('Contact Form', () => {
-    it('renders contact title', () => {
-      expect(screen.getByText('Vamos Conversar?')).toBeInTheDocument()
+  describe('Numbers', () => {
+    it('only uses the facts published on LinkedIn', () => {
+      renderPage()
+      expect(screen.getByText('anos de experiência com front-end')).toBeInTheDocument()
+      expect(screen.getByText('em Core Web Vitals no e-commerce da Cobasi')).toBeInTheDocument()
+      expect(screen.getByText('anos e 7 meses em apostas esportivas de alto tráfego')).toBeInTheDocument()
+      expect(screen.getByText('competições realizadas no SuaArena')).toBeInTheDocument()
+    })
+  })
+
+  describe('Services', () => {
+    it('renders the bento grid with what is delivered', () => {
+      renderPage()
+      expect(screen.getByText('O que eu entrego')).toBeInTheDocument()
+      ;['Arquitetura front-end', 'Performance e Core Web Vitals', 'Design System', 'APIs e regras de negócio', 'Liderança técnica', 'Produto sob medida (Vela Studio)'].forEach((title) => {
+        expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
+      })
+    })
+  })
+
+  describe('Experience', () => {
+    it('renders the 7 LinkedIn experiences in order', () => {
+      renderPage()
+      const section = document.getElementById('experiencia') as HTMLElement
+      const companies = within(section).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+      expect(companies).toEqual([
+        'Sobre mim',
+        'Accurate Software',
+        'Vela Studio',
+        'Suprema Gaming & Co.',
+        'Arena 22',
+        'Accurate Software',
+        'Superare',
+        'Studio Visual',
+      ])
+      expect(within(section).getByText('Desenvolvedor Front-End Sênior | Liderança Técnica')).toBeInTheDocument()
+      expect(within(section).getByText('Jan/2026 · Atual')).toBeInTheDocument()
+      expect(within(section).getByText('Mai/2017 · Nov/2017')).toBeInTheDocument()
     })
 
-    it('renders contact form fields', () => {
+    it('renders the about column with education and languages', () => {
+      renderPage()
+      expect(screen.getByText(/Centro Universitário FAM/)).toBeInTheDocument()
+      expect(screen.getByText('Português (nativo) · Inglês B2')).toBeInTheDocument()
+    })
+  })
+
+  describe('Contact form', () => {
+    it('renders the fields and direct links', () => {
+      renderPage()
       expect(screen.getByPlaceholderText('Nome')).toBeInTheDocument()
       expect(screen.getByPlaceholderText('Email')).toBeInTheDocument()
       expect(screen.getByPlaceholderText('Mensagem')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /enviar mensagem/i })).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: /eduardosantosj2@gmail.com/ })).toHaveAttribute('href', 'mailto:eduardosantosj2@gmail.com')
+      expect(screen.getAllByRole('link', { name: /LinkedIn/ })[0]).toHaveAttribute('href', 'https://www.linkedin.com/in/eduardo-santos-jacinto')
     })
 
     it('validates required fields', async () => {
       const user = userEvent.setup()
-      const submitButton = screen.getByRole('button', { name: /enviar mensagem/i })
-      
-      await user.click(submitButton)
-      
+      renderPage()
+      await user.click(screen.getByRole('button', { name: /enviar mensagem/i }))
       await waitFor(() => {
         expect(screen.getByText('Nome deve ter pelo menos 2 caracteres.')).toBeInTheDocument()
         expect(screen.getByText('Email inválido.')).toBeInTheDocument()
@@ -196,47 +282,49 @@ describe('Portfolio Page', () => {
       })
     })
 
-    it('submits form with valid data', async () => {
-      global.fetch = jest.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({ success: true }),
-        })
-      ) as jest.Mock
-
+    it('submits valid data to the contact API', async () => {
+      global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) })) as jest.Mock
       const user = userEvent.setup()
-      
+      renderPage()
       await user.type(screen.getByPlaceholderText('Nome'), 'João Silva')
       await user.type(screen.getByPlaceholderText('Email'), 'joao@email.com')
       await user.type(screen.getByPlaceholderText('Mensagem'), 'Mensagem de teste com mais de 10 caracteres')
-      
-      const submitButton = screen.getByRole('button', { name: /enviar mensagem/i })
-      await user.click(submitButton)
-      
+      await user.click(screen.getByRole('button', { name: /enviar mensagem/i }))
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith('/api/contact', expect.any(Object))
+        expect(global.fetch).toHaveBeenCalledWith('/api/contact', expect.objectContaining({ method: 'POST' }))
       })
     })
   })
 
-  describe('Footer', () => {
+  describe('Footer and accessibility', () => {
     it('renders copyright and location', () => {
-      const currentYear = new Date().getFullYear()
-      expect(screen.getByText(`© ${currentYear} Eduardo dos Santos Jacinto`)).toBeInTheDocument()
-      expect(screen.getByText('Santa Catarina, Brasil')).toBeInTheDocument()
+      renderPage()
+      expect(screen.getByText(`© ${new Date().getFullYear()} Eduardo dos Santos Jacinto`)).toBeInTheDocument()
+      expect(screen.getByText('Itajaí, SC, Brasil')).toBeInTheDocument()
+    })
+
+    it('renders the skip link to the main content', () => {
+      renderPage()
+      expect(screen.getByText('Pular para o conteúdo principal')).toHaveAttribute('href', '#conteudo')
+      expect(document.getElementById('conteudo')?.tagName).toBe('MAIN')
     })
   })
 
-  describe('Accessibility', () => {
-    it('renders skip to content link', () => {
-      const skipLink = screen.getByText('Pular para o conteúdo principal')
-      expect(skipLink).toBeInTheDocument()
-      expect(skipLink).toHaveAttribute('href', '#inicio')
+  describe('Content rules', () => {
+    it('never uses the em dash in any text', () => {
+      expect(JSON.stringify(translations)).not.toContain(String.fromCharCode(0x2014))
     })
 
-    it('renders navigation with aria-label', () => {
-      const nav = screen.getByLabelText('Navegação principal')
-      expect(nav).toBeInTheDocument()
+    it('never says 7+ years anymore', () => {
+      expect(JSON.stringify(translations)).not.toMatch(/7\+/)
+    })
+
+    it('keeps PT and EN with the same structure', () => {
+      const shape = (obj: unknown): unknown =>
+        Array.isArray(obj) ? obj.length : obj && typeof obj === 'object'
+          ? Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, shape(v)]))
+          : typeof obj
+      expect(shape(translations.en)).toEqual(shape(translations.pt))
     })
   })
 })

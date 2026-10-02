@@ -1,3 +1,5 @@
+import { SmoothScroll } from "@/components/site/smooth-scroll";
+import { ThemeProvider } from "@/components/site/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import type { Metadata } from "next";
@@ -19,9 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Eduardo dos Santos Jacinto | Full Stack Developer",
-  description: "Desenvolvedor Full Stack com 7+ anos de experiência em React, Next.js e Node.js. Especialista em performance web e arquitetura escalável.",
-  keywords: ["React", "Next.js", "TypeScript", "Full Stack Developer", "Frontend Engineer", "Node.js", "JavaScript", "Web Development"],
+  title: "Eduardo dos Santos Jacinto | Senior Front-End Engineer",
+  description: "Desenvolvedor Front-End Sênior com 9 anos de experiência em React, Next.js e TypeScript. Design System, performance e arquitetura front-end, com produtos próprios em produção.",
+  keywords: ["React", "Next.js", "TypeScript", "Senior Front-End Engineer", "Frontend Engineer", "Node.js", "JavaScript", "Web Development"],
   authors: [{ name: "Eduardo dos Santos Jacinto" }],
   creator: "Eduardo dos Santos Jacinto",
   icons: {
@@ -31,14 +33,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: "https://edusantos.vercel.app",
-    title: "Eduardo dos Santos Jacinto | Full Stack Developer",
-    description: "Desenvolvedor Full Stack com 7+ anos de experiência em React, Next.js e Node.js",
+    title: "Eduardo dos Santos Jacinto | Senior Front-End Engineer",
+    description: "Desenvolvedor Front-End Sênior com 9 anos de experiência em React, Next.js e TypeScript",
     siteName: "Eduardo Jacinto Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Eduardo dos Santos Jacinto | Full Stack Developer",
-    description: "Desenvolvedor Full Stack com 7+ anos de experiência",
+    title: "Eduardo dos Santos Jacinto | Senior Front-End Engineer",
+    description: "Desenvolvedor Front-End Sênior com 9 anos de experiência",
   },
   robots: {
     index: true,
@@ -59,14 +61,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
-        <LanguageProvider>
-          {children}
-          <Toaster />
-        </LanguageProvider>
+        <SmoothScroll />
+        <ThemeProvider>
+          <LanguageProvider>
+            {children}
+            <Toaster position="bottom-right" />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -12,6 +12,13 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    // Configs do Jest rodam em CommonJS e o jest.mock exige require dentro da factory.
+    files: ["jest.config.js", "jest.setup.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",
