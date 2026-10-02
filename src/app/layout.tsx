@@ -21,6 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://edusantos.vercel.app"),
   title: "Eduardo dos Santos Jacinto | Senior Front-End Engineer",
   description: "Desenvolvedor Front-End Sênior com 9 anos de experiência em React, Next.js e TypeScript. Design System, performance e arquitetura front-end, com produtos próprios em produção.",
   keywords: ["React", "Next.js", "TypeScript", "Senior Front-End Engineer", "Frontend Engineer", "Node.js", "JavaScript", "Web Development"],
