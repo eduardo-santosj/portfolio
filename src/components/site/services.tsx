@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Boxes, Gauge, Layers, LayoutTemplate, Rocket, Users } from "lucide-react";
+import { Boxes, Gauge, Layers, LayoutTemplate, ShieldCheck, Users } from "lucide-react";
 
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
 import { BorderBeam } from "@/components/ui/border-beam";
@@ -16,7 +16,7 @@ const ICONS: Record<string, React.ElementType> = {
   "design-system": Layers,
   integration: Boxes,
   leadership: Users,
-  vela: Rocket,
+  quality: ShieldCheck,
 };
 
 // Layout do bento (Dipa): peças largas alternando com peças estreitas.
@@ -26,7 +26,7 @@ const SPANS: Record<string, string> = {
   "design-system": "md:col-span-1",
   integration: "md:col-span-1",
   leadership: "md:col-span-1",
-  vela: "md:col-span-1",
+  quality: "md:col-span-1",
 };
 
 function Tags({ tags }: { tags: string[] }) {
@@ -74,7 +74,7 @@ export function Services() {
               }
             >
               <Tags tags={service.tags} />
-              {service.id === "vela" ? <BorderBeam size={90} duration={8} colorFrom="var(--primary)" colorTo="var(--beam-to)" /> : null}
+              {service.id === "quality" ? <BorderBeam size={90} duration={8} colorFrom="var(--primary)" colorTo="var(--beam-to)" /> : null}
             </BentoCard>
           </motion.div>
         ))}

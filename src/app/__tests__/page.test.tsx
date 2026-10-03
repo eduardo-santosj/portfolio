@@ -18,15 +18,18 @@ const VELA_PROJECTS = [
   'SuaArena Arenas',
   'SuaArena Ferinos',
   'AmeConsulta',
-  'Gonix (FisioAnalysis)',
+  'Gonix',
   'Vela Connect',
   'SuaArena Design System',
 ]
 
+// A lista curta da seção Vela mostra só os produtos no ar (o Design System fica no card).
+const VELA_LIVE_PRODUCTS = VELA_PROJECTS.filter((title) => title !== 'SuaArena Design System')
+
 const CAREER_PROJECTS = [
   'Suprema Gaming & Co.',
   'Cobasi & SPet (Accurate Software)',
-  'GM Propostas Comerciais (Accurate Software)',
+  'GM Propostas (Accurate Software)',
 ]
 
 describe('Portfolio Page', () => {
@@ -35,7 +38,7 @@ describe('Portfolio Page', () => {
       renderPage()
       const nav = screen.getByRole('navigation', { name: 'Navegação principal' })
       expect(within(nav).getByRole('link', { name: 'Projetos' })).toHaveAttribute('href', '#projetos')
-      expect(within(nav).getByRole('link', { name: 'Serviços' })).toHaveAttribute('href', '#servicos')
+      expect(within(nav).getByRole('link', { name: 'Como trabalho' })).toHaveAttribute('href', '#servicos')
       expect(within(nav).getByRole('link', { name: 'Experiência' })).toHaveAttribute('href', '#experiencia')
       expect(within(nav).getByRole('link', { name: 'Contato' })).toHaveAttribute('href', '#contato')
     })
@@ -45,7 +48,7 @@ describe('Portfolio Page', () => {
       renderPage()
       await user.click(screen.getByRole('button', { name: 'Switch to English' }))
       expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Real software, running in production.')
-      expect(screen.getByText('Featured projects')).toBeInTheDocument()
+      expect(screen.getByText('Selected work')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Mudar para Português' })).toBeInTheDocument()
       screen.getAllByRole('link', { name: /Download CV/ }).forEach((link) => expect(link).toHaveAttribute('href', '/cv_en.pdf'))
     })
@@ -66,9 +69,12 @@ describe('Portfolio Page', () => {
       expect(vela.getByText('Itajaí, SC')).toBeInTheDocument()
       expect(vela.getAllByAltText('Logo da Vela Studio')).toHaveLength(2)
 
-      VELA_PROJECTS.forEach((title) => {
+      VELA_LIVE_PRODUCTS.forEach((title) => {
         expect(vela.getByRole('link', { name: (name) => name.startsWith(title) })).toHaveAttribute('href', expect.stringMatching(/^#projeto-/))
       })
+      expect(vela.queryByRole('link', { name: /Design System/ })).not.toBeInTheDocument()
+      // Sem descrição de produto aqui: o detalhe mora no card.
+      expect(vela.queryByText(/500/)).not.toBeInTheDocument()
 
       expect(vela.getByRole('link', { name: /^Site: velastudio.com.br/ })).toHaveAttribute('href', 'https://velastudio.com.br')
       expect(vela.getByRole('link', { name: /@velastudiobr/ })).toHaveAttribute('href', 'https://www.instagram.com/velastudiobr/')
@@ -82,7 +88,7 @@ describe('Portfolio Page', () => {
   })
 
   describe('Mobile menu', () => {
-    const ALL_SECTIONS = ['Início', 'Projetos', 'Vela Studio', 'Números', 'Serviços', 'Experiência', 'Contato']
+    const ALL_SECTIONS = ['Início', 'Projetos', 'Vela Studio', 'Números', 'Como trabalho', 'Experiência', 'Contato']
 
     it('opens from the hamburger with every section, language, theme, CV and contact CTA', async () => {
       const user = userEvent.setup()
@@ -134,7 +140,13 @@ describe('Portfolio Page', () => {
       expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Software de verdade, rodando em produção.')
       expect(screen.getByText('Desenvolvedor Front-End Sênior')).toBeInTheDocument()
       const hero = document.getElementById('inicio') as HTMLElement
-      expect(within(hero).getByText(/9 anos de experiência em React, Next.js e TypeScript/)).toBeInTheDocument()
+      expect(within(hero).getByText(/Construo interfaces e produtos que gente de verdade usa todo dia/)).toBeInTheDocument()
+    })
+
+    it('does not repeat the first paragraph of the about section', () => {
+      expect(translations.pt.hero.description).not.toBe(translations.pt.experience.about[0])
+      expect(translations.pt.hero.description).not.toMatch(/9 anos de experiência em React/)
+      expect(translations.en.hero.description).not.toMatch(/9 years of experience in React/)
     })
 
     it('renders the portrait photo with a localized alt', async () => {
@@ -184,10 +196,11 @@ describe('Portfolio Page', () => {
       expect(titles.indexOf('SuaArena Torneios')).toBeLessThan(titles.indexOf('Suprema Gaming & Co.'))
     })
 
-    it('shows the project status in mono labels', () => {
+    it('shows the project status in Portuguese', () => {
       renderPage()
       const projects = within(document.getElementById('projetos') as HTMLElement)
-      expect(projects.getAllByText('Live').length).toBe(6)
+      expect(projects.getAllByText('No ar').length).toBe(6)
+      expect(projects.queryByText('Live')).not.toBeInTheDocument()
       expect(projects.queryByText('Em dev')).not.toBeInTheDocument()
       expect(projects.getByText('Publicado')).toBeInTheDocument()
       expect(projects.getAllByText('Entregue').length).toBe(3)
@@ -206,7 +219,52 @@ describe('Portfolio Page', () => {
       renderPage()
       expect(screen.queryByAltText('Screenshot do projeto SuaArena Design System')).not.toBeInTheDocument()
       expect(screen.getByText('Pacote npm privado, sem página pública')).toBeInTheDocument()
-      expect(screen.getByAltText('Screenshot do projeto Gonix (FisioAnalysis)')).toHaveAttribute('src', '/images/projetos/gonix.png')
+      expect(screen.getByAltText('Screenshot do projeto Gonix')).toHaveAttribute('src', '/images/projetos/gonix.png')
+    })
+
+    it('shows the short line and the problem, with the rest behind an accessible toggle', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const card = within(document.getElementById('projeto-torneios') as HTMLElement)
+      expect(card.getByText(/Torneios de areia com chave, placar e ranking ao vivo/)).toBeVisible()
+      expect(card.getByText('Problema')).toBeInTheDocument()
+      expect(card.getByText(/inscrição por mensagem, chave montada à mão/)).toBeVisible()
+
+      const toggle = card.getByRole('button', { name: 'Ver como fiz' })
+      expect(toggle).toHaveAttribute('aria-expanded', 'false')
+      const details = document.getElementById(toggle.getAttribute('aria-controls') as string) as HTMLElement
+      expect(details).not.toBeVisible()
+
+      await user.click(toggle)
+      expect(toggle).toHaveAttribute('aria-expanded', 'true')
+      expect(toggle).toHaveAccessibleName('Fechar detalhes')
+      expect(details).toBeVisible()
+      ;['Solução', 'Como fiz', 'Resultado'].forEach((label) => expect(within(details).getByText(label)).toBeInTheDocument())
+      expect(within(details).getByText(/Mais de 500 competições/)).toBeInTheDocument()
+
+      await user.click(toggle)
+      expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    it('omits the outcome block when there is no real outcome', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const card = within(document.getElementById('projeto-suprema') as HTMLElement)
+      await user.click(card.getByRole('button', { name: 'Ver como fiz' }))
+      expect(card.getByText('Como fiz')).toBeInTheDocument()
+      expect(card.queryByText('Resultado')).not.toBeInTheDocument()
+    })
+
+    it('keeps the stack chips true to the role in each project', () => {
+      renderPage()
+      const ame = within(document.getElementById('projeto-ameconsulta') as HTMLElement)
+      expect(ame.queryByText('NestJS')).not.toBeInTheDocument()
+      expect(ame.getByText('Express')).toBeInTheDocument()
+      const cobasi = within(document.getElementById('projeto-cobasi') as HTMLElement)
+      expect(cobasi.queryByText('MongoDB')).not.toBeInTheDocument()
+      expect(cobasi.queryByText('Node.js')).not.toBeInTheDocument()
+      const suprema = within(document.getElementById('projeto-suprema') as HTMLElement)
+      expect(suprema.getByText('Azure')).toBeInTheDocument()
     })
 
     it('filters by group', async () => {
@@ -230,17 +288,19 @@ describe('Portfolio Page', () => {
       expect(screen.getByText('anos de experiência com front-end')).toBeInTheDocument()
       expect(screen.getByText('em Core Web Vitals no e-commerce da Cobasi')).toBeInTheDocument()
       expect(screen.getByText('anos e 7 meses em apostas esportivas de alto tráfego')).toBeInTheDocument()
-      expect(screen.getByText('competições realizadas no SuaArena')).toBeInTheDocument()
+      expect(screen.getByText('competições realizadas no SuaArena Torneios')).toBeInTheDocument()
     })
   })
 
   describe('Services', () => {
-    it('renders the bento grid with what is delivered', () => {
+    it('renders the "how I work" bento grid, without the Vela sales card', () => {
       renderPage()
-      expect(screen.getByText('O que eu entrego')).toBeInTheDocument()
-      ;['Arquitetura front-end', 'Performance e Core Web Vitals', 'Design System', 'APIs e regras de negócio', 'Liderança técnica', 'Produto sob medida (Vela Studio)'].forEach((title) => {
-        expect(screen.getByRole('heading', { name: title })).toBeInTheDocument()
+      const section = within(document.getElementById('servicos') as HTMLElement)
+      expect(section.getByText('No que sou forte')).toBeInTheDocument()
+      ;['Arquitetura front-end', 'Performance', 'Design System', 'APIs e regras de negócio', 'Liderança técnica', 'Testes e qualidade'].forEach((title) => {
+        expect(section.getByRole('heading', { name: title })).toBeInTheDocument()
       })
+      expect(section.queryByText(/Produto sob medida/)).not.toBeInTheDocument()
     })
   })
 
@@ -264,6 +324,12 @@ describe('Portfolio Page', () => {
       expect(within(section).getByText('Mai/2017 · Nov/2017')).toBeInTheDocument()
     })
 
+    it('keeps the Vela experience to role and scope in 3 bullets', () => {
+      const vela = translations.pt.experience.items.find((item) => item.company === 'Vela Studio')
+      expect(vela?.points).toHaveLength(3)
+      expect(JSON.stringify(vela)).not.toMatch(/500|FisioAnalysis/)
+    })
+
     it('renders the about column with education and languages', () => {
       renderPage()
       expect(screen.getByText(/Centro Universitário FAM/)).toBeInTheDocument()
@@ -275,7 +341,7 @@ describe('Portfolio Page', () => {
     it('renders the fields and direct links', () => {
       renderPage()
       expect(screen.getByPlaceholderText('Nome')).toBeInTheDocument()
-      expect(screen.getByPlaceholderText('Email')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('E-mail')).toBeInTheDocument()
       expect(screen.getByPlaceholderText('Mensagem')).toBeInTheDocument()
       expect(screen.getByRole('link', { name: /eduardosantosj2@gmail.com/ })).toHaveAttribute('href', 'mailto:eduardosantosj2@gmail.com')
       expect(screen.getAllByRole('link', { name: /LinkedIn/ })[0]).toHaveAttribute('href', 'https://www.linkedin.com/in/eduardo-santos-jacinto')
@@ -287,7 +353,7 @@ describe('Portfolio Page', () => {
       await user.click(screen.getByRole('button', { name: /enviar mensagem/i }))
       await waitFor(() => {
         expect(screen.getByText('Nome deve ter pelo menos 2 caracteres.')).toBeInTheDocument()
-        expect(screen.getByText('Email inválido.')).toBeInTheDocument()
+        expect(screen.getByText('E-mail inválido.')).toBeInTheDocument()
         expect(screen.getByText('Mensagem deve ter pelo menos 10 caracteres.')).toBeInTheDocument()
       })
     })
@@ -297,7 +363,7 @@ describe('Portfolio Page', () => {
       const user = userEvent.setup()
       renderPage()
       await user.type(screen.getByPlaceholderText('Nome'), 'João Silva')
-      await user.type(screen.getByPlaceholderText('Email'), 'joao@email.com')
+      await user.type(screen.getByPlaceholderText('E-mail'), 'joao@email.com')
       await user.type(screen.getByPlaceholderText('Mensagem'), 'Mensagem de teste com mais de 10 caracteres')
       await user.click(screen.getByRole('button', { name: /enviar mensagem/i }))
       await waitFor(() => {
@@ -327,6 +393,20 @@ describe('Portfolio Page', () => {
 
     it('never says 7+ years anymore', () => {
       expect(JSON.stringify(translations)).not.toMatch(/7\+/)
+    })
+
+    it('uses a single name for Gonix', () => {
+      expect(JSON.stringify(translations)).not.toMatch(/FisioAnalys/i)
+    })
+
+    it('never calls Vela Connect clients paying customers', () => {
+      expect(JSON.stringify(translations)).not.toMatch(/pagantes|paying/i)
+    })
+
+    it('never says the Ferinos app is published', () => {
+      const ferinos = translations.pt.projects.items.find((item) => item.title === 'SuaArena Ferinos')
+      expect(ferinos?.result).toMatch(/a caminho/)
+      expect(JSON.stringify(ferinos)).not.toMatch(/app (está )?publicado|na loja/i)
     })
 
     it('keeps PT and EN with the same structure', () => {

@@ -24,7 +24,8 @@ const STATUS_STYLE = {
  */
 export function VelaStudio() {
   const { t, getProjects } = useLanguage();
-  const products = getProjects().filter((p) => p.group === "vela");
+  // Lista curta: só os produtos no ar. O detalhe de cada um mora no card da seção Projetos.
+  const products = getProjects().filter((p) => p.group === "vela" && p.status === "live");
 
   const links = [
     { href: VELA.site, label: t("vela.site"), value: "velastudio.com.br", Icon: Globe },

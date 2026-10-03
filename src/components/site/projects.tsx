@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -110,8 +110,24 @@ interface CardProps {
   animate: boolean;
 }
 
+/** Bloco do card com rótulo mono numerado ("01 / PROBLEMA"). */
+function Block({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        <span className="text-primary">{String(n).padStart(2, "0")}</span>
+        <span className="mx-1.5 text-faint">/</span>
+        {label}
+      </dt>
+      <dd className="mt-1.5 text-sm leading-relaxed text-foreground/80">{children}</dd>
+    </div>
+  );
+}
+
 function ProjectCard({ project, index, total, progress, animate }: CardProps) {
   const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const detailsId = `projeto-${project.id}-detalhes`;
   // Cada card encolhe um pouco conforme os próximos sobem por cima dele.
   const targetScale = 1 - (total - index) * 0.03;
   const scale = useTransform(progress, [index / total, 1], [1, targetScale]);
@@ -136,8 +152,15 @@ function ProjectCard({ project, index, total, progress, animate }: CardProps) {
                 {t(`projects.status.${project.status}`)}
               </span>
             </div>
-            <h3 className="text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl">{project.title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">{project.desc}</p>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-2xl font-medium tracking-tight sm:text-3xl md:text-4xl">{project.title}</h3>
+              <p className="text-base leading-snug text-muted-foreground">{project.short}</p>
+            </div>
+            <dl>
+              <Block n={1} label={t("projects.blocks.problem") as string}>
+                {project.problem}
+              </Block>
+            </dl>
             <ul className="flex flex-wrap gap-2" aria-label="Stack">
               {project.stack.map((s) => (
                 <li key={s} className="rounded-full border border-edge px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-foreground/70">
@@ -145,20 +168,59 @@ function ProjectCard({ project, index, total, progress, animate }: CardProps) {
                 </li>
               ))}
             </ul>
-            {project.link ? (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${t("projects.viewProject") as string}: ${project.title}`}
-                className="group inline-flex w-fit items-center gap-1.5 border-b border-primary/40 pb-0.5 text-sm font-medium text-primary transition-colors hover:border-primary"
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <button
+                type="button"
+                aria-expanded={open}
+                aria-controls={detailsId}
+                onClick={() => setOpen((v) => !v)}
+                className="group inline-flex w-fit items-center gap-1.5 rounded-full border border-edge px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider text-foreground transition-colors hover:border-primary hover:text-primary"
               >
-                {t("projects.viewProject")}
-                <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-              </a>
-            ) : null}
+                {open ? t("projects.hideDetails") : t("projects.showDetails")}
+                {open ? <X className="size-3.5" aria-hidden="true" /> : <Plus className="size-3.5" aria-hidden="true" />}
+              </button>
+              {project.link ? (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${t("projects.viewProject") as string}: ${project.title}`}
+                  className="group inline-flex w-fit items-center gap-1.5 border-b border-primary/40 pb-0.5 text-sm font-medium text-primary transition-colors hover:border-primary"
+                >
+                  {t("projects.viewProject")}
+                  <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+              ) : null}
+            </div>
           </div>
-          <BrowserMockup project={project} />
+
+          {/* Fechado: print. Aberto: solução, como fiz e resultado ocupam o lugar do print,
+              para o card não crescer além da tela no efeito de cards empilhados. */}
+          <div className="relative min-w-0">
+            <div className={cn(open && "hidden md:invisible md:block")} aria-hidden={open || undefined}>
+              <BrowserMockup project={project} />
+            </div>
+            <div
+              id={detailsId}
+              hidden={!open}
+              data-lenis-prevent
+              className="rounded-xl border border-edge bg-inset p-5 sm:p-6 md:absolute md:inset-0 md:overflow-y-auto"
+            >
+              <dl className="flex flex-col gap-5">
+                <Block n={2} label={t("projects.blocks.solution") as string}>
+                  {project.solution}
+                </Block>
+                <Block n={3} label={t("projects.blocks.how") as string}>
+                  {project.how}
+                </Block>
+                {project.result ? (
+                  <Block n={4} label={t("projects.blocks.result") as string}>
+                    {project.result}
+                  </Block>
+                ) : null}
+              </dl>
+            </div>
+          </div>
         </div>
       </motion.article>
     </div>
