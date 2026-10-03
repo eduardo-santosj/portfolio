@@ -137,6 +137,16 @@ describe('Portfolio Page', () => {
       expect(within(hero).getByText(/9 anos de experiência em React, Next.js e TypeScript/)).toBeInTheDocument()
     })
 
+    it('renders the portrait photo with a localized alt', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      const hero = document.getElementById('inicio') as HTMLElement
+      const photo = within(hero).getByRole('img', { name: /Retrato de Eduardo dos Santos/ })
+      expect(photo).toHaveAttribute('src', expect.stringContaining('eduardo-santos.jpg'))
+      await user.click(screen.getByRole('button', { name: 'Switch to English' }))
+      expect(within(hero).getByRole('img', { name: /Portrait of Eduardo dos Santos/ })).toBeInTheDocument()
+    })
+
     it('renders the HUD with location, timezone and availability', () => {
       renderPage()
       expect(screen.getByText('Itajaí, SC · Remoto')).toBeInTheDocument()

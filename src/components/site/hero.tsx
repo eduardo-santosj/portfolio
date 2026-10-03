@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, ArrowRight, FileDown } from "lucide-react";
+import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -57,6 +58,43 @@ function useLocalTime() {
   return time;
 }
 
+/** Retrato com moldura fina âmbar, crop marks de mira e legenda mono. */
+function Portrait({ alt }: { alt: string }) {
+  const reduceMotion = useReducedMotion();
+  const corner = "pointer-events-none absolute size-4 border-primary";
+
+  return (
+    <motion.figure
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, ease: EASE, delay: 0.3 }}
+      className="relative mx-auto w-40 shrink-0 sm:w-48 lg:mx-0 lg:w-72 xl:w-80"
+    >
+      <div aria-hidden="true" className="glow-amber pointer-events-none absolute -inset-16 -z-10 opacity-90" />
+      <div className="relative p-2.5">
+        <span aria-hidden="true" className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
+        <span aria-hidden="true" className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
+        <span aria-hidden="true" className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />
+        <span aria-hidden="true" className={`${corner} bottom-0 right-0 border-b-2 border-r-2`} />
+        <div className="relative aspect-[4/5] overflow-hidden border border-primary/40 bg-[#0a0a0a]">
+          <Image
+            src="/images/eduardo-santos.jpg"
+            alt={alt}
+            fill
+            priority
+            sizes="(min-width: 1280px) 320px, (min-width: 1024px) 288px, (min-width: 640px) 192px, 160px"
+            className="object-cover"
+          />
+        </div>
+      </div>
+      <figcaption className="mono-label mt-2 flex items-center justify-between gap-2 px-2.5 text-[10px]">
+        <span className="text-foreground/80">EDUARDO.JPG</span>
+        <span>ITAJAÍ, SC</span>
+      </figcaption>
+    </motion.figure>
+  );
+}
+
 export function Hero() {
   const { t, getCvUrl } = useLanguage();
   const time = useLocalTime();
@@ -74,73 +112,76 @@ export function Hero() {
     <section id="inicio" className="relative flex min-h-[100svh] flex-col overflow-hidden">
       <div aria-hidden="true" className="glow-amber pointer-events-none absolute -left-40 -top-40 size-[60rem] opacity-80" />
 
-      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 pb-10 pt-28 md:px-8 md:pt-36">
-        <motion.p {...fadeIn(0.1)} className="mono-label mb-8 flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
-          <span className="text-foreground/80">{t("hero.eyebrow")}</span>
-          <span className="text-faint">/</span>
-          <span>{t("hero.role")}</span>
-        </motion.p>
+      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-4 pb-10 pt-28 md:px-8 md:pt-36 lg:flex-row lg:items-center lg:justify-between lg:gap-14">
+        <div className="order-last min-w-0 lg:order-first">
+          <motion.p {...fadeIn(0.1)} className="mono-label mb-8 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+            <span className="text-foreground/80">{t("hero.eyebrow")}</span>
+            <span className="text-faint">/</span>
+            <span>{t("hero.role")}</span>
+          </motion.p>
 
-        <h1
-          aria-label={`${line1} ${line2}`}
-          className="text-balance text-[clamp(2.75rem,11vw,9rem)] font-medium leading-[0.95] tracking-[-0.04em]"
-        >
-          <span aria-hidden="true" className="block">
-            <RevealWords text={line1} delay={0.2} />
-          </span>
-          <span aria-hidden="true" className="block text-subtle">
-            <RevealWords text={line2} delay={0.2 + firstLineWords * 0.07} />
-          </span>
-        </h1>
+          <h1
+            aria-label={`${line1} ${line2}`}
+            className="text-balance text-[clamp(2.75rem,11vw,9rem)] font-medium leading-[0.95] tracking-[-0.04em] lg:text-[clamp(3.25rem,6vw,6.5rem)]"
+          >
+            <span aria-hidden="true" className="block">
+              <RevealWords text={line1} delay={0.2} />
+            </span>
+            <span aria-hidden="true" className="block text-subtle">
+              <RevealWords text={line2} delay={0.2 + firstLineWords * 0.07} />
+            </span>
+          </h1>
 
-        <motion.p {...fadeIn(0.7)} className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          {t("hero.description")}
-        </motion.p>
+          <motion.p {...fadeIn(0.7)} className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {t("hero.description")}
+          </motion.p>
 
-        <motion.div {...fadeIn(0.85)} className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <a
-            href="#projetos"
-            className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
-          >
-            {t("hero.ctaProjects")}
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-          </a>
-          <a
-            href="#contato"
-            className="border-b border-primary/50 pb-0.5 text-sm font-medium text-primary transition-colors hover:border-primary"
-          >
-            {t("hero.contact")}
-          </a>
-          <a
-            href={getCvUrl()}
-            download
-            className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <FileDown className="size-3.5" aria-hidden="true" />
-            {t("hero.downloadCV")}
-          </a>
-          <span className="flex items-center gap-1">
+          <motion.div {...fadeIn(0.85)} className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
             <a
-              href={PROFILE.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-soft hover:text-foreground"
+              href="#projetos"
+              className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              <GithubIcon className="size-4" />
+              {t("hero.ctaProjects")}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </a>
             <a
-              href={PROFILE.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-soft hover:text-foreground"
+              href="#contato"
+              className="border-b border-primary/50 pb-0.5 text-sm font-medium text-primary transition-colors hover:border-primary"
             >
-              <LinkedinIcon className="size-4" />
+              {t("hero.contact")}
             </a>
-          </span>
-        </motion.div>
+            <a
+              href={getCvUrl()}
+              download
+              className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <FileDown className="size-3.5" aria-hidden="true" />
+              {t("hero.downloadCV")}
+            </a>
+            <span className="flex items-center gap-1">
+              <a
+                href={PROFILE.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-soft hover:text-foreground"
+              >
+                <GithubIcon className="size-4" />
+              </a>
+              <a
+                href={PROFILE.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-soft hover:text-foreground"
+              >
+                <LinkedinIcon className="size-4" />
+              </a>
+            </span>
+          </motion.div>
+        </div>
+        <Portrait alt={t("hero.photoAlt") as string} />
       </div>
 
       {/* HUD do Haoqi: local, fuso, hora viva e disponibilidade. */}

@@ -28,7 +28,7 @@ async function loadGoogleFont(family: string, weight: number, text: string) {
 async function loadPhoto() {
   try {
     const file = await readFile(
-      path.join(process.cwd(), "public", "images", "edu-perfil.jpg"),
+      path.join(process.cwd(), "public", "images", "eduardo-santos-og.jpg"),
     );
     return `data:image/jpeg;base64,${file.toString("base64")}`;
   } catch {

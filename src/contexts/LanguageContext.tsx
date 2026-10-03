@@ -143,6 +143,7 @@ export const translations = {
     },
     hero: {
       eyebrow: "Eduardo dos Santos",
+      photoAlt: "Retrato de Eduardo dos Santos, desenvolvedor front-end sênior, sorrindo de óculos",
       role: "Desenvolvedor Front-End Sênior",
       titleLine1: "Software de verdade,",
       titleLine2: "rodando em produção.",
@@ -382,6 +383,7 @@ export const translations = {
     },
     hero: {
       eyebrow: "Eduardo dos Santos",
+      photoAlt: "Portrait of Eduardo dos Santos, senior front-end engineer, smiling with glasses",
       role: "Senior Front-End Engineer",
       titleLine1: "Real software,",
       titleLine2: "running in production.",
