@@ -152,7 +152,7 @@ export const translations = {
       contact: "Falar comigo",
       downloadCV: "Baixar CV",
       location: "Itajaí, SC · Remoto",
-      available: "Disponível para projetos",
+      available: "Aberto a vagas e projetos",
       localTime: "Hora local",
       scroll: "Rolar",
       facts: "9 anos · React · Next.js · TypeScript",
@@ -240,7 +240,7 @@ export const translations = {
       languages: "Idiomas",
       languagesList: "Português (nativo) · Inglês B2",
       availability: "Disponibilidade",
-      availabilityText: "Remoto (Brasil e exterior), híbrido ou presencial na região de Itajaí, Joinville e Blumenau, SC.",
+      availabilityText: "Aberto a vagas (CLT ou PJ) no Brasil e no exterior e a projetos sob demanda. Remoto, híbrido ou presencial na região de Itajaí, Joinville e Blumenau, SC.",
       items: [
         {
           company: "Accurate Software",
@@ -340,7 +340,7 @@ export const translations = {
     contact: {
       label: "Contato",
       title: "Vamos conversar?",
-      subtitle: "Estou disponível para novos projetos e oportunidades. Me conte o que você precisa e eu respondo em breve.",
+      subtitle: "Estou aberto a vagas, nacionais e internacionais, e a novos projetos. Me conte o que você precisa e eu respondo em breve.",
       direct: "Contato direto",
       form: {
         name: "Nome",
@@ -392,7 +392,7 @@ export const translations = {
       contact: "Talk to me",
       downloadCV: "Download CV",
       location: "Itajaí, SC · Remote",
-      available: "Available for projects",
+      available: "Open to roles and projects",
       localTime: "Local time",
       scroll: "Scroll",
       facts: "9 yrs · React · Next.js · TypeScript",
@@ -480,7 +480,7 @@ export const translations = {
       languages: "Languages",
       languagesList: "Portuguese (native) · English B2",
       availability: "Availability",
-      availabilityText: "Remote (Brazil and international), hybrid or on-site in the Itajaí, Joinville and Blumenau region, SC.",
+      availabilityText: "Open to full-time or contract roles in Brazil and abroad, and to freelance projects. Remote, hybrid or on-site in the Itajaí, Joinville and Blumenau region, SC.",
       items: [
         {
           company: "Accurate Software",
@@ -580,7 +580,7 @@ export const translations = {
     contact: {
       label: "Contact",
       title: "Let's talk?",
-      subtitle: "I'm available for new projects and opportunities. Tell me what you need and I'll get back to you soon.",
+      subtitle: "I'm open to roles in Brazil and abroad, and to new projects. Tell me what you need and I'll get back to you soon.",
       direct: "Direct contact",
       form: {
         name: "Name",

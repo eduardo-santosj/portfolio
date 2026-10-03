@@ -151,7 +151,7 @@ describe('Portfolio Page', () => {
       renderPage()
       expect(screen.getByText('Itajaí, SC · Remoto')).toBeInTheDocument()
       expect(screen.getByText(/GMT-3/)).toBeInTheDocument()
-      expect(screen.getByText('Disponível para projetos')).toBeInTheDocument()
+      expect(screen.getByText('Aberto a vagas e projetos')).toBeInTheDocument()
     })
 
     it('renders the CTAs, including the CV download', () => {
